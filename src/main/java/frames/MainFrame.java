@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 public class MainFrame extends JFrame {
 
 	public MainFrame() {
-		setTitle("¼º°øÀÎ");
+		setTitle("ì„±ê³µì¸");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel groundPane = new JPanel();
 		setContentPane(groundPane);
@@ -26,11 +26,11 @@ public class MainFrame extends JFrame {
 		setResizable(false);
 		groundPane.setLayout(null);
 
-		// »ó´Ü (°Ë»ö ÀÔ·ÂÃ¢(µ¸º¸±â ÀÌ¹ÌÁö+JTextField),·Î°í ÀÌ¹ÌÁö,·Î±×ÀÎ ¹öÆ°)
+		// ìƒë‹¨ (ê²€ìƒ‰ ì…ë ¥ì°½(ë‹ë³´ê¸° ì´ë¯¸ì§€+JTextField),ë¡œê³  ì´ë¯¸ì§€,ë¡œê·¸ì¸ ë²„íŠ¼)
 
-		// °Ë»ö ÀÔ·ÂÃ¢
-		// µ¸º¸±â
-		ImageIcon icon1 = new ImageIcon("images/µ¸º¸±â.png");
+		// ê²€ìƒ‰ ì…ë ¥ì°½
+		// ë‹ë³´ê¸°
+		ImageIcon icon1 = new ImageIcon("images/ë‹ë³´ê¸°.png");
 		Image image1 = icon1.getImage();
 		Image image5 = image1.getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH);
 		ImageIcon image6 = new ImageIcon(image5);
@@ -39,12 +39,12 @@ public class MainFrame extends JFrame {
 		imageLabel2.setBounds(10, 50, 40, 40);
 		groundPane.add(imageLabel2);
 
-		// °Ë»ö
+		// ê²€ìƒ‰
 		RoundJTextField searchTF = new RoundJTextField(250);
 		searchTF.setBounds(50, 50, 250, 40);
 		groundPane.add(searchTF);
 
-		// ·Î°í
+		// ë¡œê³ 
 		ImageIcon icon = new ImageIcon("images/logo.jpg");
 		Image image = icon.getImage();
 		Image image2 = image.getScaledInstance(200, 90, java.awt.Image.SCALE_SMOOTH);
@@ -54,35 +54,41 @@ public class MainFrame extends JFrame {
 		imageLabel.setBounds(500, 0, 200, 90);
 		groundPane.add(imageLabel);
 
-		// ·Î±×ÀÎ ¹öÆ°
-		JButton btnLogin = new JButton("·Î±×ÀÎ");
+		// ë¡œê·¸ì¸ ë²„íŠ¼
+		JButton btnLogin = new JButton("ë¡œê·¸ì¸");
 		btnLogin.setBounds(1000, 50, 100, 40);
 		btnLogin.setBackground(Color.white);
 		groundPane.add(btnLogin);
 
-		// ¸Ş´º Ä«Å×°í¸® (JPanel+JLabel¿¡ ¾×¼ÇÀÌº¥Æ®)
+		// ë©”ë‰´ ì¹´í…Œê³ ë¦¬ (JPanel+JLabelì— ì•¡ì…˜ì´ë²¤íŠ¸)
 		JPanel categoryPane = new JPanel();
 		categoryPane.setBackground(new Color(204, 204, 255, 100));
 		categoryPane.setBounds(10, 100, 1170, 40);
 		groundPane.add(categoryPane);
 
 		JLabel[] category = new JLabel[5];
-		String[] cNames = { "°øÁö»çÇ×", "ÀÚÀ¯°Ô½ÃÆÇ", "±¸Á÷Á¤º¸", "È¸»çÈÄ±â", "¸éÁ¢" };
+		String[] cNames = { "ê³µì§€ì‚¬í•­", "ììœ ê²Œì‹œíŒ", "êµ¬ì§ì •ë³´", "íšŒì‚¬í›„ê¸°", "ë©´ì ‘" };
 		for (int i = 0; i < category.length; i++) {
 			category[i] = new JLabel("  " + cNames[i] + "  |");
-			category[i].setFont(new Font("³ª´®°íµñ", Font.BOLD, 26));
+			category[i].setFont(new Font("ë‚˜ëˆ”ê³ ë”•", Font.BOLD, 26));
 			categoryPane.add(category[i]);
 		}
 
-		// °øÁö»çÇ×
+		// ê³µì§€ì‚¬í•­
 
-		// ÀÚÀ¯°Ô½ÃÆÇ
+		// ììœ ê²Œì‹œíŒ
 
-		// ¾Ë ¼öµµ ÀÖ´Â »ç¶÷
+		// ì•Œ ìˆ˜ë„ ìˆëŠ” ì‚¬ëŒ
+		JPanel recommPeoplePane = new JPanel();
+		recommPeoplePane.setBackground(Color.LIGHT_GRAY);
+		recommPeoplePane.setBounds(900, 140, 280, 700);
+		groundPane.add(recommPeoplePane);
+		JLabel kimsoul = new JLabel("soul kim 19í•™ë²ˆ");
+		kimsoul.setBounds(0, 0, 10, 10);
+		recommPeoplePane.add(kimsoul);
+		// êµ¬ì§ ì •ë³´
 
-		// ±¸Á÷ Á¤º¸
-
-		// ¹ÌÁ¤
+		// ë¯¸ì •
 
 		setSize(1200, 900);
 		setVisible(true);
@@ -90,7 +96,7 @@ public class MainFrame extends JFrame {
 
 	public class RoundJTextField extends JTextField {
 		/**
-		 * °Ë»öÃ¢ ¼¼ºÎ µğÀÚÀÎ (¸ğ¼­¸® µÕ±Û°Ô) µ¸º¸±â ÀÌ¹ÌÁö ÅØ½ºÆ®ÇÊµå ¾È¿¡ ³Ö¾î¾ßÇÔ
+		 * ê²€ìƒ‰ì°½ ì„¸ë¶€ ë””ìì¸ (ëª¨ì„œë¦¬ ë‘¥ê¸€ê²Œ) ë‹ë³´ê¸° ì´ë¯¸ì§€ í…ìŠ¤íŠ¸í•„ë“œ ì•ˆì— ë„£ì–´ì•¼í•¨
 		 */
 		private static final long serialVersionUID = 1L;
 		private Shape shape;
@@ -99,7 +105,7 @@ public class MainFrame extends JFrame {
 		public RoundJTextField(int size) {
 			super(size);
 			setOpaque(false);
-			setText("°Ë»ö ±â´É");
+			setText("ê²€ìƒ‰ ê¸°ëŠ¥");
 
 		}
 
