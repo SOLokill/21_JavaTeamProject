@@ -75,6 +75,24 @@ public class MainFrame extends JFrame {
 		}
 
 		// 공지사항
+		JPanel noticePane=new JPanel();
+		noticePane.setBackground(new Color(204, 204, 255, 100));
+		noticePane.setBounds(10, 150, 400, 350);
+		groundPane.add(noticePane);
+		
+		JLabel ntTitle=new JLabel("학내 공지사항");
+		ntTitle.setFont(new Font("나눔고딕", Font.BOLD, 26));
+		noticePane.add(ntTitle);
+		
+		Notices nt=new Notices();
+		String[] notices=nt.Notices();
+		JLabel[] nts=new JLabel[10];
+		for (int i = 0; i < notices.length; i++) {
+			nts[i] = new JLabel(notices[i]);
+			nts[i].setFont(new Font("나눔고딕", Font.PLAIN, 17));
+			noticePane.add(nts[i]);
+		}
+		
 
 		// 자유게시판
 
