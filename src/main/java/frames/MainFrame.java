@@ -74,7 +74,7 @@ public class MainFrame extends JFrame {
 			categoryPane.add(category[i]);
 		}
 
-		// 공지사항
+		// 공지사항!
 		JPanel noticePane=new JPanel();
 		noticePane.setBackground(new Color(204, 204, 255, 100));
 		noticePane.setBounds(10, 150, 400, 350);
