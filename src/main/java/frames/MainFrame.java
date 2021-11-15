@@ -93,7 +93,6 @@ public class MainFrame extends JFrame {
 			noticePane.add(nts[i]);
 		}
 		
-		
 
 		// 자유게시판
 
