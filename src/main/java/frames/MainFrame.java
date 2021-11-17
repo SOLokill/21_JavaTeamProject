@@ -51,19 +51,20 @@ public class MainFrame extends JFrame {
 		ImageIcon image3 = new ImageIcon(image2);
 		JLabel imageLabel = new JLabel();
 		imageLabel.setIcon(image3);
-		imageLabel.setBounds(500, 0, 200, 90);
+		imageLabel.setBounds(650, 0, 200, 90);
 		groundPane.add(imageLabel);
 
 		// 로그인 버튼
 		JButton btnLogin = new JButton("로그인");
-		btnLogin.setBounds(1000, 50, 100, 40);
+		btnLogin.setBounds(1300, 50, 100, 40);
 		btnLogin.setBackground(Color.white);
+		btnLogin.setFont(new Font("나눔고딕", Font.PLAIN, 17));
 		groundPane.add(btnLogin);
 
 		// 메뉴 카테고리 (JPanel+JLabel에 액션이벤트)
 		JPanel categoryPane = new JPanel();
-		categoryPane.setBackground(new Color(204, 204, 255, 100));
-		categoryPane.setBounds(10, 100, 1170, 40);
+		categoryPane.setBackground(new Color(153,204,255,100));
+		categoryPane.setBounds(10, 100, 1470, 40);
 		groundPane.add(categoryPane);
 
 		JLabel[] category = new JLabel[5];
@@ -76,13 +77,15 @@ public class MainFrame extends JFrame {
 
 		// 공지사항!
 		JPanel noticePane=new JPanel();
-		noticePane.setBackground(new Color(204, 204, 255, 100));
+		noticePane.setBackground(new Color(153,204,255,20));
 		noticePane.setBounds(10, 150, 400, 350);
 		groundPane.add(noticePane);
+		noticePane.setLayout(null);
 		
 		JLabel ntTitle=new JLabel("학내 공지사항");
 		ntTitle.setFont(new Font("나눔고딕", Font.BOLD, 26));
 		noticePane.add(ntTitle);
+		ntTitle.setBounds(10,10,200,26);
 		
 		Notices nt=new Notices();
 		String[] notices=nt.Notices();
@@ -90,6 +93,7 @@ public class MainFrame extends JFrame {
 		for (int i = 0; i < notices.length; i++) {
 			nts[i] = new JLabel(notices[i]);
 			nts[i].setFont(new Font("나눔고딕", Font.PLAIN, 17));
+			nts[i].setBounds(10,50+(i*25),380,18);
 			noticePane.add(nts[i]);
 		}
 		
@@ -99,16 +103,56 @@ public class MainFrame extends JFrame {
 		// 알 수도 있는 사람
 		JPanel recommPeoplePane = new JPanel();
 		recommPeoplePane.setBackground(Color.LIGHT_GRAY);
-		recommPeoplePane.setBounds(900, 140, 280, 700);
+		recommPeoplePane.setBounds(1080, 150, 400, 350);
 		groundPane.add(recommPeoplePane);
 		JLabel kimsoul = new JLabel("soul kim 19학번");
 		kimsoul.setBounds(0, 0, 10, 10);
 		recommPeoplePane.add(kimsoul);
-		// 구직 정보
+		
+		// 구직 사이트 바로가기 
+		JPanel jobSitePane = new JPanel();
+		jobSitePane.setBackground(Color.yellow);
+		jobSitePane.setBounds(1080, 510, 400, 330);
+		jobSitePane.setLayout(null);
+		groundPane.add(jobSitePane);
+		
+		
+		JLabel jsTitle=new JLabel("구직 사이트 바로가기");
+		jsTitle.setFont(new Font("나눔고딕", Font.BOLD, 26));
+		jobSitePane.add(jsTitle);
+		jsTitle.setBounds(10, 10, 250, 30);
+		
+		ImageIcon[] jobsites = new ImageIcon[4];
+		String[] sites = { "jobkorea", "jobplanet", "saramin", "worknet"};
 
-		// 미정
+		for (int i = 0; i < sites.length; i++) {
+			jobsites[i] = new ImageIcon("images/" + sites[i] + ".jpg");
+		}	
+		
+		JLabel[] bannerLabel=new JLabel[4];
+		
+		for(int i=0;i<4;i++) {
+			bannerLabel[i]=new JLabel();
+			bannerLabel[i].setIcon(jobsites[i]);
+			jobSitePane.add(bannerLabel[i]);
+		}
+		
+		bannerLabel[0].setBounds(10,50,150,30);
+		bannerLabel[1].setBounds(170,50,150,30);
+		bannerLabel[2].setBounds(10,160,150,30);
+		bannerLabel[3].setBounds(170,160,180,50);
 
-		setSize(1200, 900);
+		//하이퍼링크 달아야함 
+		
+		
+		
+		
+		
+		
+
+		// 미정 - 추천 게시물 이런거면 좋을듯? 
+
+		setSize(1500, 900);
 		setVisible(true);
 	}
 
