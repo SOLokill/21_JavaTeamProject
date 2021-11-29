@@ -99,6 +99,11 @@ public class MainFrame extends JFrame {
 		
 
 		// 자유게시판
+		JLabel boardTitle=new JLabel("자유게시판");
+		boardTitle.setFont(new Font("나눔고딕", Font.BOLD, 26));
+		groundPane.add(boardTitle);
+		boardTitle.setBounds(510,150,200,26);
+		
 
 		// 알 수도 있는 사람
 		JPanel recommPeoplePane = new JPanel();
@@ -111,7 +116,7 @@ public class MainFrame extends JFrame {
 		
 		// 구직 사이트 바로가기 
 		JPanel jobSitePane = new JPanel();
-		jobSitePane.setBackground(Color.yellow);
+		jobSitePane.setBackground(Color.white);
 		jobSitePane.setBounds(1080, 510, 400, 330);
 		jobSitePane.setLayout(null);
 		groundPane.add(jobSitePane);
@@ -137,10 +142,10 @@ public class MainFrame extends JFrame {
 			jobSitePane.add(bannerLabel[i]);
 		}
 		
-		bannerLabel[0].setBounds(10,50,150,30);
-		bannerLabel[1].setBounds(170,50,150,30);
+		bannerLabel[0].setBounds(10,50,170,30);
+		bannerLabel[1].setBounds(200,50,150,30);
 		bannerLabel[2].setBounds(10,160,150,30);
-		bannerLabel[3].setBounds(170,160,180,50);
+		bannerLabel[3].setBounds(170,160,200,60);
 
 		//하이퍼링크 달아야함 
 		
@@ -151,6 +156,17 @@ public class MainFrame extends JFrame {
 		
 
 		// 미정 - 추천 게시물 이런거면 좋을듯? 
+		JPanel rcmdPane=new JPanel();
+		rcmdPane.setBackground(new Color(153,204,255,20));
+		rcmdPane.setBounds(10, 520, 400, 350);
+		groundPane.add(rcmdPane);
+		rcmdPane.setLayout(null);
+		
+		JLabel rcTitle=new JLabel("추천 자료글");
+		rcTitle.setFont(new Font("나눔고딕", Font.BOLD, 26));
+		rcmdPane.add(rcTitle);
+		rcTitle.setBounds(10,10,200,26);
+		
 
 		setSize(1500, 900);
 		setVisible(true);
