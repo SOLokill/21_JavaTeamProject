@@ -45,9 +45,7 @@ public class Notices {
 		} catch (InterruptedException e) {
 		}
 
-		//List<WebElement> el1 = driver.findElements(By.className("depth2 submenu2"));
-
-		
+		// List<WebElement> el1 = driver.findElements(By.className("depth2 submenu2"));
 
 		// 1초 대기
 		try {
@@ -55,17 +53,16 @@ public class Notices {
 		} catch (InterruptedException e) {
 		}
 
-
 		WebElement el2 = driver.findElement(By.className("board_list"));
 
-		//ctl00_ContentPlaceHolder1_ctl00_rptList2_ctl00_lblTitle
+		// ctl00_ContentPlaceHolder1_ctl00_rptList2_ctl00_lblTitle
 		List<WebElement> el3 = el2.findElements(By.className("left15"));
 
-		String[] notice=new String[10];
-		
+		String[] notice = new String[10];
+
 		int count = 0;
 		for (int i = 0; i < 10; i++) {
-			notice[i]=el3.get(i).getText();
+			notice[i] = el3.get(i).getText();
 		}
 
 		try {
@@ -82,11 +79,12 @@ public class Notices {
 		}
 		return notice;
 	}
+
 	public static void main(String[] args) {
 		String arr[];
-		arr=Notices();
-		
-		for(int i=0;i<10;i++) {
+		arr = Notices();
+
+		for (int i = 0; i < 10; i++) {
 			System.out.println(arr[i]);
 		}
 	}

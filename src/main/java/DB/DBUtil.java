@@ -19,9 +19,9 @@ public class DBUtil {
 	 * @return 연결 객체를 반환합니다.
 	 */
 	public Connection open() {
-		String url = "jdbc:oracle:thin:@localhost:1521:JAVAPROJECT";
-		String id = "javaproject";
-		String pw = "java123";
+		String url = "jdbc:oracle:thin:@kdw.cb0dtwejkkxo.us-east-2.rds.amazonaws.com:1521:KDW";
+		String id = "kdw";
+		String pw = "javaproject";
 
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
