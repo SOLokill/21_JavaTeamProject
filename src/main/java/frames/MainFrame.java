@@ -5,7 +5,13 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -14,9 +20,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import DB.DBUtil;
+import DB.Login;
+import dto.Member;
+
 public class MainFrame extends JFrame {
 
-	public MainFrame() {
+	public MainFrame(Member member) {
 		setTitle("성공인");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel groundPane = new JPanel();
@@ -63,7 +73,7 @@ public class MainFrame extends JFrame {
 
 		// 메뉴 카테고리 (JPanel+JLabel에 액션이벤트)
 		JPanel categoryPane = new JPanel();
-		categoryPane.setBackground(new Color(153,204,255,100));
+		categoryPane.setBackground(new Color(153, 204, 255, 100));
 		categoryPane.setBounds(10, 100, 1470, 40);
 		groundPane.add(categoryPane);
 
@@ -76,27 +86,26 @@ public class MainFrame extends JFrame {
 		}
 
 		// 공지사항!
-		JPanel noticePane=new JPanel();
-		noticePane.setBackground(new Color(153,204,255,20));
+		JPanel noticePane = new JPanel();
+		noticePane.setBackground(new Color(153, 204, 255, 20));
 		noticePane.setBounds(10, 150, 400, 350);
 		groundPane.add(noticePane);
 		noticePane.setLayout(null);
-		
-		JLabel ntTitle=new JLabel("학내 공지사항");
+
+		JLabel ntTitle = new JLabel("학내 공지사항");
 		ntTitle.setFont(new Font("나눔고딕", Font.BOLD, 26));
 		noticePane.add(ntTitle);
-		ntTitle.setBounds(10,10,200,26);
-		
-		Notices nt=new Notices();
-		String[] notices=nt.Notices();
-		JLabel[] nts=new JLabel[10];
+		ntTitle.setBounds(10, 10, 200, 26);
+
+		Notices nt = new Notices();
+		String[] notices = nt.Notices();
+		JLabel[] nts = new JLabel[10];
 		for (int i = 0; i < notices.length; i++) {
 			nts[i] = new JLabel(notices[i]);
 			nts[i].setFont(new Font("나눔고딕", Font.PLAIN, 17));
-			nts[i].setBounds(10,50+(i*25),380,18);
+			nts[i].setBounds(10, 50 + (i * 25), 380, 18);
 			noticePane.add(nts[i]);
 		}
-		
 
 		// 자유게시판
 
@@ -105,52 +114,81 @@ public class MainFrame extends JFrame {
 		recommPeoplePane.setBackground(Color.LIGHT_GRAY);
 		recommPeoplePane.setBounds(1080, 150, 400, 350);
 		groundPane.add(recommPeoplePane);
-		JLabel kimsoul = new JLabel("soul kim 19학번");
-		kimsoul.setBounds(0, 0, 10, 10);
-		recommPeoplePane.add(kimsoul);
+		if(member != null) {
+			try {
+				DBUtil util = new DBUtil();
+				Connection conn = null;
+				conn = util.open();
+				PreparedStatement ps = null;
+				ResultSet rs = null;
+				String sql = "SELECT STUDENTNO, NAME FROM MEMBER WHERE STUDENTNO <> ?";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, member.getStudentNo());
+				rs = ps.executeQuery();
+				while(rs.next()) {
+					Member client = new Member();
+					client.setStudentNo(rs.getInt("STUDENTNO"));
+					client.setName(rs.getString("NAME"));
+					
+					JButton memberBtn = new JButton(client.getStudentNo() + " "+client.getName());
+					memberBtn.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							System.out.println("=============" + member.getName());
+							if (member != null) {
+								ChatClient chattingRoom = new ChatClient(member, client);
+								chattingRoom.setVisible(true);
+							} else {
+								Login signIn = new Login();
+							}
+						}
+					});
+					memberBtn.setBounds(0, 0, 10, 10);
+					recommPeoplePane.add(memberBtn);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		
-		// 구직 사이트 바로가기 
+		
+		
+
+		// 구직 사이트 바로가기
 		JPanel jobSitePane = new JPanel();
 		jobSitePane.setBackground(Color.yellow);
 		jobSitePane.setBounds(1080, 510, 400, 330);
 		jobSitePane.setLayout(null);
 		groundPane.add(jobSitePane);
-		
-		
-		JLabel jsTitle=new JLabel("구직 사이트 바로가기");
+
+		JLabel jsTitle = new JLabel("구직 사이트 바로가기");
 		jsTitle.setFont(new Font("나눔고딕", Font.BOLD, 26));
 		jobSitePane.add(jsTitle);
 		jsTitle.setBounds(10, 10, 250, 30);
-		
+
 		ImageIcon[] jobsites = new ImageIcon[4];
-		String[] sites = { "jobkorea", "jobplanet", "saramin", "worknet"};
+		String[] sites = { "jobkorea", "jobplanet", "saramin", "worknet" };
 
 		for (int i = 0; i < sites.length; i++) {
 			jobsites[i] = new ImageIcon("images/" + sites[i] + ".jpg");
-		}	
-		
-		JLabel[] bannerLabel=new JLabel[4];
-		
-		for(int i=0;i<4;i++) {
-			bannerLabel[i]=new JLabel();
+		}
+
+		JLabel[] bannerLabel = new JLabel[4];
+
+		for (int i = 0; i < 4; i++) {
+			bannerLabel[i] = new JLabel();
 			bannerLabel[i].setIcon(jobsites[i]);
 			jobSitePane.add(bannerLabel[i]);
 		}
-		
-		bannerLabel[0].setBounds(10,50,150,30);
-		bannerLabel[1].setBounds(170,50,150,30);
-		bannerLabel[2].setBounds(10,160,150,30);
-		bannerLabel[3].setBounds(170,160,180,50);
 
-		//하이퍼링크 달아야함 
-		
-		
-		
-		
-		
-		
+		bannerLabel[0].setBounds(10, 50, 150, 30);
+		bannerLabel[1].setBounds(170, 50, 150, 30);
+		bannerLabel[2].setBounds(10, 160, 150, 30);
+		bannerLabel[3].setBounds(170, 160, 180, 50);
 
-		// 미정 - 추천 게시물 이런거면 좋을듯? 
+		// 하이퍼링크 달아야함
+
+		// 미정 - 추천 게시물 이런거면 좋을듯?
 
 		setSize(1500, 900);
 		setVisible(true);
@@ -191,8 +229,8 @@ public class MainFrame extends JFrame {
 
 	}
 
-	public static void main(String[] args) {
-		MainFrame frame = new MainFrame();
-	}
+//	public static void main(String[] args) {
+//		MainFrame frame = new MainFrame();
+//	}
 
 }
