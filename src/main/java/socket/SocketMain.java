@@ -2,6 +2,7 @@ package socket;
 
 import java.io.BufferedWriter;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -49,6 +50,7 @@ public class SocketMain {
 					socket = serverSocket.accept();
 				}
 				ObjectInputStream isr = new ObjectInputStream(serverSocket.accept().getInputStream());
+				ObjectOutputStream oos = new ObjectOutputStream(serverSocket.accept().getOutputStream());
 				System.out.println("소켓 서버 시작 완료");
 				System.out.println(123);
 //				List<HashMap<Member,String>> message = new ArrayList<HashMap<Member,String>>();
@@ -56,7 +58,7 @@ public class SocketMain {
 				message = (List<MessageVO>) isr.readObject();
 //				message = (List<HashMap<Member, String>>) isr.readObject();
 				System.out.println(message.get(0).getMember().getName() + " : "+message.get(0).getText());
-				
+				oos.writeObject(message);
 				isr.close();
 			}
 
