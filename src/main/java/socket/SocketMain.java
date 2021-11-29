@@ -45,14 +45,13 @@ public class SocketMain {
 				String ip = local.getHostAddress();
 				System.out.println(ip);
 
-				System.out.println("소켓 서버를 시작합니다.");
-				if (socket == null) {
+//				if (socket == null) {
 					socket = serverSocket.accept();
-				}
-				ObjectInputStream isr = new ObjectInputStream(serverSocket.accept().getInputStream());
-				ObjectOutputStream oos = new ObjectOutputStream(serverSocket.accept().getOutputStream());
+//				}
+				System.out.println("소켓 서버를 시작합니다.");
+				ObjectInputStream isr = new ObjectInputStream(socket.getInputStream());
+				ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 				System.out.println("소켓 서버 시작 완료");
-				System.out.println(123);
 //				List<HashMap<Member,String>> message = new ArrayList<HashMap<Member,String>>();
 				List<MessageVO> message = new ArrayList<MessageVO>();
 				message = (List<MessageVO>) isr.readObject();

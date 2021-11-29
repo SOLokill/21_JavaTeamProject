@@ -112,9 +112,6 @@ public class ChatClient extends JFrame implements KeyListener {
 				}
 				
 			}
-			
-			
-			
 			util.close();
 		} catch (Exception e) {
 			e.printStackTrace();

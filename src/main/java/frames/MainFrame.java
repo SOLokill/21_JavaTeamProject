@@ -139,6 +139,7 @@ public class MainFrame extends JFrame {
 								
 								ChatClient chattingRoom = new ChatClient(member, client);
 								chattingRoom.setVisible(true);
+								
 							} else {
 								Login signIn = new Login();
 							}
