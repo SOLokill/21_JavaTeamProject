@@ -136,6 +136,7 @@ public class MainFrame extends JFrame {
 						public void actionPerformed(ActionEvent e) {
 							System.out.println("=============" + member.getName());
 							if (member != null) {
+								
 								ChatClient chattingRoom = new ChatClient(member, client);
 								chattingRoom.setVisible(true);
 							} else {

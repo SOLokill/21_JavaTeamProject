@@ -75,18 +75,40 @@ public class ChatClient extends JFrame implements KeyListener {
 			Connection conn = null;
 			conn = util.open();
 			PreparedStatement ps = null;
-			String sql = "INSERT INTO CHATTING_ROOM (ROOMNO, ROOMNM) VALUES (CHATTING_ROOM_SQ.NEXTVAL, '"+title+"')";
+			ResultSet rs = null;
+			String sql = "SELECT ROOMNO FROM (SELECT LISTAGG(STUDENTNO, ',') WITHIN GROUP(ORDER BY ROOMNO, STUDENTNO) AS CLIENT, ROOMNO FROM PARTICIPANTS GROUP BY ROOMNO) WHERE CLIENT = ? || ',' ||?";
 			ps = conn.prepareStatement(sql);
-			ps.executeQuery();
-			
-			sql = "INSERT INTO PARTICIPANTS VALUES(PARTICIPANTS_SQ.NEXTVAL, ?, CHATTING_ROOM_SQ.CURRVAL)";
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, loginMember.getStudentNo());
-			ps.executeQuery();
-			
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, clientMember.getStudentNo());
-			ps.executeQuery();
+			ps.setInt(1, client.getStudentNo() > member.getStudentNo() ? member.getStudentNo() : client.getStudentNo());
+			ps.setInt(2, client.getStudentNo() < member.getStudentNo() ? member.getStudentNo() : client.getStudentNo());
+			rs = ps.executeQuery();
+			int roomNo = 0;
+			if(rs.next()) {
+				roomNo = rs.getInt("ROOMNO");
+			}
+			if (roomNo == 0) {
+				sql = "INSERT INTO CHATTING_ROOM (ROOMNO, ROOMNM) VALUES (CHATTING_ROOM_SQ.NEXTVAL, '"+title+"')";
+				ps = conn.prepareStatement(sql);
+				ps.executeQuery();
+				sql = "INSERT INTO PARTICIPANTS VALUES(PARTICIPANTS_SQ.NEXTVAL, ?, CHATTING_ROOM_SQ.CURRVAL)";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, loginMember.getStudentNo());
+				ps.executeQuery();
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, clientMember.getStudentNo());
+				ps.executeQuery();
+			}else{
+				sql = "SELECT NAME, CONTENT FROM CHATTING C INNER JOIN MEMBER M ON C.STUDENTNO = M.STUDENTNO WHERE C.ROOMNO = ? ORDER BY CHATINDEX";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, roomNo);
+				rs = ps.executeQuery();
+				while(rs.next()) {
+					String name = rs.getString("NAME");
+					String content = rs.getString("CONTENT");
+					String message = name + " : " + content + "\n";
+					chatGround.append(message);
+				}
+				
+			}
 			
 			
 			
@@ -121,7 +143,8 @@ public class ChatClient extends JFrame implements KeyListener {
 		try {
 			if (e.getKeyCode() == e.VK_ENTER) {
 				InetAddress local = InetAddress.getLocalHost();
-				String ip = local.getHostAddress();
+//				String ip = local.getHostAddress();
+				String ip = "192.168.219.102";
 				socket = new Socket(ip, 1593);
 				String data = chatInput.getText();
 				ObjectOutputStream osw = new ObjectOutputStream(socket.getOutputStream());
