@@ -1,13 +1,21 @@
 package frames;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.RoundRectangle2D;
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,7 +34,7 @@ import dto.Member;
 
 public class MainFrame extends JFrame {
 
-	public MainFrame(Member member) {
+	public MainFrame(Member member) throws SocketException {
 		setTitle("성공인");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel groundPane = new JPanel();
@@ -70,6 +78,16 @@ public class MainFrame extends JFrame {
 		btnLogin.setBackground(Color.white);
 		btnLogin.setFont(new Font("나눔고딕", Font.PLAIN, 17));
 		groundPane.add(btnLogin);
+		btnLogin.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new LoginUI();
+				groundPane.setVisible(true);
+				btnLogin.setText("로그아웃");
+			}
+
+		});
 
 		// 메뉴 카테고리 (JPanel+JLabel에 액션이벤트)
 		JPanel categoryPane = new JPanel();
@@ -108,18 +126,13 @@ public class MainFrame extends JFrame {
 		}
 
 		// 자유게시판
-		JLabel boardTitle=new JLabel("자유게시판");
-		boardTitle.setFont(new Font("나눔고딕", Font.BOLD, 26));
-		groundPane.add(boardTitle);
-		boardTitle.setBounds(510,150,200,26);
-		
 
 		// 알 수도 있는 사람
 		JPanel recommPeoplePane = new JPanel();
 		recommPeoplePane.setBackground(Color.LIGHT_GRAY);
 		recommPeoplePane.setBounds(1080, 150, 400, 350);
 		groundPane.add(recommPeoplePane);
-		if(member != null) {
+		if (member != null) {
 			try {
 				DBUtil util = new DBUtil();
 				Connection conn = null;
@@ -130,21 +143,20 @@ public class MainFrame extends JFrame {
 				ps = conn.prepareStatement(sql);
 				ps.setInt(1, member.getStudentNo());
 				rs = ps.executeQuery();
-				while(rs.next()) {
+				while (rs.next()) {
 					Member client = new Member();
 					client.setStudentNo(rs.getInt("STUDENTNO"));
 					client.setName(rs.getString("NAME"));
-					
-					JButton memberBtn = new JButton(client.getStudentNo() + " "+client.getName());
+
+					JButton memberBtn = new JButton(client.getStudentNo() + " " + client.getName());
 					memberBtn.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							System.out.println("=============" + member.getName());
 							if (member != null) {
-								
+
 								ChatClient chattingRoom = new ChatClient(member, client);
 								chattingRoom.setVisible(true);
-								
 							} else {
 								Login signIn = new Login();
 							}
@@ -157,13 +169,10 @@ public class MainFrame extends JFrame {
 				e.printStackTrace();
 			}
 		}
-		
-		
-		
 
 		// 구직 사이트 바로가기
 		JPanel jobSitePane = new JPanel();
-		jobSitePane.setBackground(Color.white);
+		jobSitePane.setBackground(new Color(153, 204, 255, 20));
 		jobSitePane.setBounds(1080, 510, 400, 330);
 		jobSitePane.setLayout(null);
 		groundPane.add(jobSitePane);
@@ -188,26 +197,56 @@ public class MainFrame extends JFrame {
 			jobSitePane.add(bannerLabel[i]);
 		}
 
-		bannerLabel[0].setBounds(10, 50, 150, 30);
-		bannerLabel[1].setBounds(170, 50, 150, 30);
-		bannerLabel[2].setBounds(10, 160, 150, 30);
-		bannerLabel[3].setBounds(170, 160, 180, 50);
+		bannerLabel[0].setBounds(10, 90, 180, 30);
+		bannerLabel[0].addMouseListener(new MouseAdapter() {
 
-		// 하이퍼링크 달아야함
+			public void mouseClicked(MouseEvent e) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://www.jobkorea.co.kr/"));
+				} catch (URISyntaxException | IOException ex) {
+					// It looks like there's a problem
+				}
+			}
 
+		});
+		bannerLabel[1].setBounds(190, 140, 170, 30);
+		bannerLabel[1].addMouseListener(new MouseAdapter() {
 
-		// 미정 - 추천 게시물 이런거면 좋을듯? 
-		JPanel rcmdPane=new JPanel();
-		rcmdPane.setBackground(new Color(153,204,255,20));
-		rcmdPane.setBounds(10, 520, 400, 350);
-		groundPane.add(rcmdPane);
-		rcmdPane.setLayout(null);
-		
-		JLabel rcTitle=new JLabel("추천 자료글");
-		rcTitle.setFont(new Font("나눔고딕", Font.BOLD, 26));
-		rcmdPane.add(rcTitle);
-		rcTitle.setBounds(10,10,200,26);
-		
+			public void mouseClicked(MouseEvent e) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://www.jobplanet.co.kr/welcome/index"));
+				} catch (URISyntaxException | IOException ex) {
+					// It looks like there's a problem
+				}
+			}
+
+		});
+		bannerLabel[2].setBounds(10, 200, 150, 30);
+		bannerLabel[2].addMouseListener(new MouseAdapter() {
+
+			public void mouseClicked(MouseEvent e) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://www.saramin.co.kr/zf_user/"));
+				} catch (URISyntaxException | IOException ex) {
+					// It looks like there's a problem
+				}
+			}
+
+		});
+		bannerLabel[3].setBounds(170, 240, 200, 50);
+		bannerLabel[3].addMouseListener(new MouseAdapter() {
+
+			public void mouseClicked(MouseEvent e) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://www.work.go.kr/seekWantedMain.do"));
+				} catch (URISyntaxException | IOException ex) {
+					// It looks like there's a problem
+				}
+			}
+
+		});
+
+		// 미정 - 추천 게시물 이런거면 좋을듯?
 
 		setSize(1500, 900);
 		setVisible(true);

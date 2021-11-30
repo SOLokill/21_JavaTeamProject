@@ -5,7 +5,10 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.net.InetAddress;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,7 +19,19 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import DB.DBUtil;
+import DB.Login;
+import dto.Member;
+
+
 public class RegisterUI extends JFrame {
+	JTextField tfId; 
+	JPasswordField tfPassword;
+	JTextField tfName;
+	JTextField tfStudentNo;
+	JTextField tfGrade;
+	JTextField tfSubject;
+	JTextField tfJob;
 	
 	public RegisterUI() {
 	setTitle("회원가입");
@@ -51,6 +66,7 @@ public class RegisterUI extends JFrame {
 	Font font27=new Font("맑은 고딕", Font.BOLD, 27);
 	
 	//입력
+	//tfId,tfPassword,tfName,tfStudentNo.tfGrade,tfSubject,tfJob
 	JLabel text1=new JLabel("회원정보를 입력해주세요.");
 	text1.setFont(font25);
 	LoginArea.add(text1);
@@ -61,54 +77,54 @@ public class RegisterUI extends JFrame {
 	text2.setBounds(90,230,350,25);
 	LoginArea.add(text2);
 	
-	JTextField id=new JTextField("아이디",400);
-	JPasswordField password=new JPasswordField(400);
-	LoginArea.add(id);
-	id.setBounds(90,270,450,40);
-	LoginArea.add("비밀번호",password);
-	password.setBounds(90,309,450,40);
-	id.setFont(font25);
-	password.setFont(font25);
+	JTextField tfId=new JTextField("아이디",400);
+	JPasswordField tfPassword=new JPasswordField(400);
+	LoginArea.add(tfId);
+	tfId.setBounds(90,270,450,40);
+	LoginArea.add("비밀번호",tfPassword);
+	tfPassword.setBounds(90,309,450,40);
+	tfId.setFont(font25);
+	tfPassword.setFont(font25);
 	
 	JLabel text3=new JLabel("이름");
 	text3.setFont(font27);
 	text3.setBounds(90,360,100,27);
 	LoginArea.add(text3);
 	
-	JTextField name=new JTextField("이름",400);
-	LoginArea.add(name);
-	name.setBounds(90,400,450,40);
-	name.setFont(font25);
+	JTextField tfName=new JTextField("이름",400);
+	LoginArea.add(tfName);
+	tfName.setBounds(90,400,450,40);
+	tfName.setFont(font25);
 	
 	JLabel text4=new JLabel("학교 정보");
 	text4.setFont(font27);
 	text4.setBounds(90,450,150,30);
 	LoginArea.add(text4);
 	
-	JTextField studentNo=new JTextField("학번",400);
-	JTextField grade=new JTextField("학년",400);
-	JTextField subject=new JTextField("학부(과)",400);
+	JTextField tfStudentNo=new JTextField("학번",400);
+	JTextField tfGrade=new JTextField("학년",400);
+	JTextField tfSubject=new JTextField("학부(과)",400);
 
-	LoginArea.add(studentNo);
-	studentNo.setBounds(90,500,450,40);
-	LoginArea.add(grade);
-	grade.setBounds(90,539,450,40);
-	LoginArea.add(subject);
-	subject.setBounds(90,578,450,40);
+	LoginArea.add(tfStudentNo);
+	tfStudentNo.setBounds(90,500,450,40);
+	LoginArea.add(tfGrade);
+	tfGrade.setBounds(90,539,450,40);
+	LoginArea.add(tfSubject);
+	tfSubject.setBounds(90,578,450,40);
 	
-	studentNo.setFont(font25);
-	grade.setFont(font25);
-	subject.setFont(font25);
+	tfStudentNo.setFont(font25);
+	tfGrade.setFont(font25);
+	tfSubject.setFont(font25);
 	
 	JLabel text5=new JLabel("회사");
 	text5.setFont(font27);
 	text5.setBounds(90,630,100,27);
 	LoginArea.add(text5);
 	
-	JTextField job=new JTextField(400);
-	LoginArea.add(job);
-	job.setBounds(90,670,450,40);
-	job.setFont(font25);
+	JTextField tfJob=new JTextField(400);
+	LoginArea.add(tfJob);
+	tfJob.setBounds(90,670,450,40);
+	tfJob.setFont(font25);
 
 
 	//btnSignIn
@@ -123,7 +139,54 @@ public class RegisterUI extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+			try {
+				InetAddress local = InetAddress.getLocalHost();
+				String ip = local.getHostAddress();
+				DBUtil util = new DBUtil();
+				Connection conn = null;
+				conn = util.open();
+				PreparedStatement ps = null;
+				String stdNo=tfStudentNo.getText().trim();
+				int studentNo = Integer.parseInt(stdNo);
+				String id = tfId.getText().trim();
+				
+				//암호화된 비밀번호 get하기
+				 String pw = "";
+				  
+				//tf_pw 필드에서 패스워드를 얻어옴, char[] 배열에 저장
+				char[] secret_pw = tfPassword.getPassword(); 
+
+				//secret_pw 배열에 저장된 암호의 자릿수 만큼 for문 돌리면서 cha 에 한 글자씩 저장
+				     for(char cha : secret_pw){         
+				         Character.toString(cha);       //cha 에 저장된 값 string으로 변환
+				       //pw 에 저장하기, pw 에 값이 비어있으면 저장, 값이 있으면 이어서 저장하는 삼항연산자
+				         pw += (pw.equals("")) ? ""+cha+"" : ""+cha+"";   
+				     }
+
+				    
+
+				String password =pw;
+				String name =tfName.getText().trim();
+				
+				String g=tfGrade.getText().trim();
+				int grade = Integer.parseInt(g);
+				String subject = tfSubject.getText().trim();
+				String job = "";
+				if (grade > 4 || grade < 1) {
+					job = "학생";
+				}else {
+					job = tfJob.getText().trim();
+				}
+				String sql ="INSERT INTO \"KDW\".\"MEMBER\" (STUDENTNO, ID, PASSWORD, NAME, GRADE, SUBJECT, IP, JOB) VALUES ("+studentNo+", '"+id+"', '"+password+"', '"+name+"', "+grade+", '"+subject+"', '"+ip+"', '"+job+"')\r\n"
+						+ "";
+				ps = conn.prepareStatement(sql);
+				ResultSet rs = null;
+				rs = ps.executeQuery();
+				util.close();
+				dispose();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 		
 	});
