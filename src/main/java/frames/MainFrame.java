@@ -1,11 +1,34 @@
 package frames;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -13,11 +36,36 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+import DB.DBUtil;
+import DB.Login;
+import dto.Member;
+
+import test.com.board.control.BoardDAO;
+import test.com.board.control.BoardVO;
+import test.com.board.model.BoardDAOImpl;
+import test.com.board.view.BoardInsert;
+import test.com.board.view.BoardUpdate;
 
 public class MainFrame extends JFrame {
 
-	public MainFrame() {
-		setTitle("¼º°øÀÎ");
+	private JTable table;
+	private JTextField searchString;
+
+	public MainFrame(Member member) {
+		setTitle("ì„±ê³µì¸");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel groundPane = new JPanel();
 		setContentPane(groundPane);
@@ -26,11 +74,11 @@ public class MainFrame extends JFrame {
 		setResizable(false);
 		groundPane.setLayout(null);
 
-		// »ó´Ü (°Ë»ö ÀÔ·ÂÃ¢(µ¸º¸±â ÀÌ¹ÌÁö+JTextField),·Î°í ÀÌ¹ÌÁö,·Î±×ÀÎ ¹öÆ°)
+		// ìƒë‹¨ (ê²€ìƒ‰ ì…ë ¥ì°½(ë‹ë³´ê¸° ì´ë¯¸ì§€+JTextField),ë¡œê³  ì´ë¯¸ì§€,ë¡œê·¸ì¸ ë²„íŠ¼)
 
-		// °Ë»ö ÀÔ·ÂÃ¢
-		// µ¸º¸±â
-		ImageIcon icon1 = new ImageIcon("images/µ¸º¸±â.png");
+		// ê²€ìƒ‰ ì…ë ¥ì°½
+		// ë‹ë³´ê¸°
+		ImageIcon icon1 = new ImageIcon("images/ë‹ë³´ê¸°.png");
 		Image image1 = icon1.getImage();
 		Image image5 = image1.getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH);
 		ImageIcon image6 = new ImageIcon(image5);
@@ -39,58 +87,360 @@ public class MainFrame extends JFrame {
 		imageLabel2.setBounds(10, 50, 40, 40);
 		groundPane.add(imageLabel2);
 
-		// °Ë»ö
+		// ê²€ìƒ‰
 		RoundJTextField searchTF = new RoundJTextField(250);
 		searchTF.setBounds(50, 50, 250, 40);
 		groundPane.add(searchTF);
 
-		// ·Î°í
+		// ë¡œê³ 
 		ImageIcon icon = new ImageIcon("images/logo.jpg");
 		Image image = icon.getImage();
 		Image image2 = image.getScaledInstance(200, 90, java.awt.Image.SCALE_SMOOTH);
 		ImageIcon image3 = new ImageIcon(image2);
 		JLabel imageLabel = new JLabel();
 		imageLabel.setIcon(image3);
-		imageLabel.setBounds(500, 0, 200, 90);
+		imageLabel.setBounds(650, 0, 200, 90);
 		groundPane.add(imageLabel);
 
-		// ·Î±×ÀÎ ¹öÆ°
-		JButton btnLogin = new JButton("·Î±×ÀÎ");
-		btnLogin.setBounds(1000, 50, 100, 40);
-		btnLogin.setBackground(Color.white);
-		groundPane.add(btnLogin);
+		JLabel welcome = new JLabel(member.getName() + "ë‹˜ í™˜ì˜í•©ë‹ˆë‹¤!");
+		welcome.setFont(new Font("ë‚˜ëˆ”ê³ ë”•", Font.PLAIN, 17));
+		welcome.setBounds(1100, 50, 200, 40);
+		groundPane.add(welcome);
 
-		// ¸Ş´º Ä«Å×°í¸® (JPanel+JLabel¿¡ ¾×¼ÇÀÌº¥Æ®)
+		// ë¡œê·¸ì¸ ë²„íŠ¼
+		JButton btnLogin = new JButton("ë¡œê·¸ì•„ì›ƒ");
+		btnLogin.setBounds(1300, 50, 100, 40);
+		btnLogin.setBackground(Color.white);
+		btnLogin.setFont(new Font("ë‚˜ëˆ”ê³ ë”•", Font.PLAIN, 17));
+		groundPane.add(btnLogin);
+		btnLogin.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new LoginUI();
+				dispose();
+			}
+
+		});
+
+		// ë©”ë‰´ ì¹´í…Œê³ ë¦¬ (JPanel+JLabelì— ì•¡ì…˜ì´ë²¤íŠ¸)
 		JPanel categoryPane = new JPanel();
-		categoryPane.setBackground(new Color(204, 204, 255, 100));
-		categoryPane.setBounds(10, 100, 1170, 40);
+		categoryPane.setBackground(new Color(153, 204, 255, 100));
+		categoryPane.setBounds(10, 100, 1470, 40);
 		groundPane.add(categoryPane);
 
 		JLabel[] category = new JLabel[5];
-		String[] cNames = { "°øÁö»çÇ×", "ÀÚÀ¯°Ô½ÃÆÇ", "±¸Á÷Á¤º¸", "È¸»çÈÄ±â", "¸éÁ¢" };
+		String[] cNames = { "ê³µì§€ì‚¬í•­", "ììœ ê²Œì‹œíŒ", "êµ¬ì§ì •ë³´", "íšŒì‚¬í›„ê¸°", "ë©´ì ‘" };
 		for (int i = 0; i < category.length; i++) {
 			category[i] = new JLabel("  " + cNames[i] + "  |");
-			category[i].setFont(new Font("³ª´®°íµñ", Font.BOLD, 26));
+			category[i].setFont(new Font("ë‚˜ëˆ”ê³ ë”•", Font.BOLD, 26));
 			categoryPane.add(category[i]);
 		}
 
-		// °øÁö»çÇ×
+		// ê³µì§€ì‚¬í•­!
+		JPanel noticePane = new JPanel();
+		noticePane.setBackground(new Color(153, 204, 255, 20));
+		noticePane.setBounds(10, 150, 400, 350);
+		groundPane.add(noticePane);
+		noticePane.setLayout(null);
 
-		// ÀÚÀ¯°Ô½ÃÆÇ
+		JLabel ntTitle = new JLabel("í•™ë‚´ ê³µì§€ì‚¬í•­");
+		ntTitle.setFont(new Font("ë‚˜ëˆ”ê³ ë”•", Font.BOLD, 26));
+		noticePane.add(ntTitle);
+		ntTitle.setBounds(10, 10, 200, 26);
 
-		// ¾Ë ¼öµµ ÀÖ´Â »ç¶÷
+		Notices nt = new Notices();
+		String[] notices = nt.Notices();
+		JLabel[] nts = new JLabel[10];
+		for (int i = 0; i < notices.length; i++) {
+			nts[i] = new JLabel(notices[i]);
+			nts[i].setFont(new Font("ë‚˜ëˆ”ê³ ë”•", Font.PLAIN, 17));
+			nts[i].setBounds(10, 50 + (i * 25), 380, 18);
+			noticePane.add(nts[i]);
+		}
 
-		// ±¸Á÷ Á¤º¸
+		// íšŒë¶ì´
+		JPanel left = new JPanel();
+		left.setBackground(new Color(153, 204, 255, 20));
+		left.setBounds(10, 510, 400, 330);
+		groundPane.add(left);
+		left.setLayout(null);
 
-		// ¹ÌÁ¤
+		ImageIcon iconh = new ImageIcon("images/íšŒë¶ì´.jpg");
+		Image imagehh=iconh.getImage();
+		Image imagehhh=imagehh.getScaledInstance(400, 330, java.awt.Image.SCALE_SMOOTH);
+		ImageIcon imageH=new ImageIcon(imagehhh);
+		JLabel imageT = new JLabel();
+		imageT.setIcon(imageH);
+		left.add(imageT);
+		imageT.setBounds(0,0,400,330);
+		
+		
 
-		setSize(1200, 900);
+		// ììœ ê²Œì‹œíŒ
+
+		JPanel freeBoard = new JPanel();
+		freeBoard.setBounds(420, 150, 640, 700);
+		freeBoard.setLayout(null);
+		freeBoard.setBackground(Color.white);
+		freeBoard.setBorder(new TitledBorder(new LineBorder(Color.black, 2)));
+
+		JLabel fbTitle = new JLabel("ìµëª…ê²Œì‹œíŒ");
+		fbTitle.setFont(new Font("ë‚˜ëˆ”ê³ ë”•", Font.BOLD, 26));
+		freeBoard.add(fbTitle);
+		fbTitle.setBounds(10, 10, 200, 26);
+
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(12, 79, 600, 600);
+		freeBoard.add(scrollPane);
+
+		BoardDAO dao = new BoardDAOImpl();
+		List<BoardVO> list = dao.select();
+
+		String[] colNames = new String[] { "ê¸€ë²ˆí˜¸", "ì œëª©", "ë‚´ìš©...", "ì‘ì„±ì", "ì‘ì„±ì¼" };
+		Object[][] rowDatas = new Object[list.size()][colNames.length];
+
+		for (int i = 0; i < list.size(); i++) {
+			rowDatas[i] = new Object[] { list.get(i).getNum(), list.get(i).getTitle(), list.get(i).getContent(),
+					list.get(i).getName(), list.get(i).getRegDate() };
+		}
+		table = new JTable();
+		table.setModel(new DefaultTableModel(rowDatas, colNames) {
+			boolean[] columnEditables = new boolean[] { false, false, false, true, false };
+
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		table.getColumnModel().getColumn(0).setResizable(false);
+		table.getColumnModel().getColumn(0).setPreferredWidth(45);
+		table.getColumnModel().getColumn(1).setResizable(false);
+		table.getColumnModel().getColumn(1).setPreferredWidth(200);
+		table.getColumnModel().getColumn(2).setResizable(false);
+		table.getColumnModel().getColumn(2).setPreferredWidth(164);
+		table.getColumnModel().getColumn(4).setResizable(false);
+		table.getColumnModel().getColumn(4).setPreferredWidth(140);
+
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				int rowNum = table.getSelectedRow();
+				BoardVO vos = new BoardVO();
+				vos = list.get(rowNum);
+
+				new BoardUpdate(vos);
+			}
+		});
+		scrollPane.setViewportView(table);
+
+		JLabel lblNewLabel = new JLabel("ê²€ìƒ‰ì¡°ê±´");
+		lblNewLabel.setBounds(186, 50, 56, 15);
+		freeBoard.add(lblNewLabel);
+
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] { "title", "content", "writer" }));
+		comboBox.setBounds(244, 47, 74, 21);
+		freeBoard.add(comboBox);
+
+		searchString = new JTextField();
+		searchString.setBounds(330, 47, 133, 21);
+		freeBoard.add(searchString);
+		searchString.setColumns(10);
+
+		JButton btnSearch = new JButton("search..");
+		btnSearch.setBounds(466, 47, 106, 23);
+		btnSearch.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BoardDAO dao = new BoardDAOImpl();
+				dao.search(String.valueOf(comboBox.getSelectedItem()), searchString.getText());
+
+				setVisible(false);
+
+			}
+		});
+		freeBoard.add(btnSearch);
+
+		JButton btnWrite = new JButton("ê¸€ì‘ì„±");
+		btnWrite.setBounds(12, 47, 97, 23);
+		btnWrite.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new BoardInsert();
+
+			}
+		});
+
+		freeBoard.add(btnWrite);
+
+		ImageIcon iconr = new ImageIcon("images/refresh.png");
+		Image imager = iconr.getImage();
+		Image imager2 = imager.getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH);
+		ImageIcon imageR = new ImageIcon(imager2);
+
+		JButton rfLabel = new JButton();
+		rfLabel.setIcon(iconr);
+		rfLabel.setBounds(582, 47, 30, 30);
+		freeBoard.add(rfLabel);
+		rfLabel.setBorderPainted(false);
+		rfLabel.setContentAreaFilled(false);
+
+		rfLabel.addMouseListener(new MouseAdapter() {
+
+			public void mouseClicked(MouseEvent e) {
+				table.setModel(new DefaultTableModel(rowDatas, colNames) {
+					boolean[] columnEditables = new boolean[] { false, false, false, true, false };
+
+					public boolean isCellEditable(int row, int column) {
+						return columnEditables[column];
+					}
+				});
+				table.getColumnModel().getColumn(0).setResizable(false);
+				table.getColumnModel().getColumn(0).setPreferredWidth(45);
+				table.getColumnModel().getColumn(1).setResizable(false);
+				table.getColumnModel().getColumn(1).setPreferredWidth(200);
+				table.getColumnModel().getColumn(2).setResizable(false);
+				table.getColumnModel().getColumn(2).setPreferredWidth(164);
+				table.getColumnModel().getColumn(4).setResizable(false);
+				table.getColumnModel().getColumn(4).setPreferredWidth(140);
+
+			}
+
+		});
+
+		groundPane.add(freeBoard);
+
+		// ì•Œ ìˆ˜ë„ ìˆëŠ” ì‚¬ëŒ
+		JPanel recommPeoplePane = new JPanel();
+		recommPeoplePane.setBackground(Color.LIGHT_GRAY);
+		recommPeoplePane.setBounds(1080, 150, 400, 350);
+		groundPane.add(recommPeoplePane);
+		if (member != null) {
+			try {
+				DBUtil util = new DBUtil();
+				Connection conn = null;
+				conn = util.open();
+				PreparedStatement ps = null;
+				ResultSet rs = null;
+				String sql = "SELECT STUDENTNO, NAME FROM MEMBER WHERE STUDENTNO <> ?";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, member.getStudentNo());
+				rs = ps.executeQuery();
+				while (rs.next()) {
+					Member client = new Member();
+					client.setStudentNo(rs.getInt("STUDENTNO"));
+					client.setName(rs.getString("NAME"));
+
+					JButton memberBtn = new JButton(client.getStudentNo() + " " + client.getName());
+					memberBtn.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							System.out.println("=============" + member.getName());
+							if (member != null) {
+
+								ChatClient chattingRoom = new ChatClient(member, client);
+								chattingRoom.setVisible(true);
+							} else {
+								Login signIn = new Login();
+							}
+						}
+					});
+					memberBtn.setBounds(0, 0, 10, 10);
+					recommPeoplePane.add(memberBtn);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		// êµ¬ì§ ì‚¬ì´íŠ¸ ë°”ë¡œê°€ê¸°
+		JPanel jobSitePane = new JPanel();
+		jobSitePane.setBackground(new Color(153, 204, 255, 20));
+		jobSitePane.setBounds(1080, 510, 400, 330);
+		jobSitePane.setLayout(null);
+		groundPane.add(jobSitePane);
+
+		JLabel jsTitle = new JLabel("êµ¬ì§ ì‚¬ì´íŠ¸ ë°”ë¡œê°€ê¸°");
+		jsTitle.setFont(new Font("ë‚˜ëˆ”ê³ ë”•", Font.BOLD, 26));
+		jobSitePane.add(jsTitle);
+		jsTitle.setBounds(10, 10, 250, 30);
+
+		ImageIcon[] jobsites = new ImageIcon[4];
+		String[] sites = { "jobkorea", "jobplanet", "saramin", "worknet" };
+
+		for (int i = 0; i < sites.length; i++) {
+			jobsites[i] = new ImageIcon("images/" + sites[i] + ".jpg");
+		}
+
+		JLabel[] bannerLabel = new JLabel[4];
+
+		for (int i = 0; i < 4; i++) {
+			bannerLabel[i] = new JLabel();
+			bannerLabel[i].setIcon(jobsites[i]);
+			jobSitePane.add(bannerLabel[i]);
+		}
+
+		bannerLabel[0].setBounds(10, 90, 180, 30);
+		bannerLabel[0].addMouseListener(new MouseAdapter() {
+
+			public void mouseClicked(MouseEvent e) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://www.jobkorea.co.kr/"));
+				} catch (URISyntaxException | IOException ex) {
+					// It looks like there's a problem
+				}
+			}
+
+		});
+		bannerLabel[1].setBounds(190, 140, 170, 30);
+		bannerLabel[1].addMouseListener(new MouseAdapter() {
+
+			public void mouseClicked(MouseEvent e) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://www.jobplanet.co.kr/welcome/index"));
+				} catch (URISyntaxException | IOException ex) {
+					// It looks like there's a problem
+				}
+			}
+
+		});
+		bannerLabel[2].setBounds(10, 200, 150, 30);
+		bannerLabel[2].addMouseListener(new MouseAdapter() {
+
+			public void mouseClicked(MouseEvent e) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://www.saramin.co.kr/zf_user/"));
+				} catch (URISyntaxException | IOException ex) {
+					// It looks like there's a problem
+				}
+			}
+
+		});
+		bannerLabel[3].setBounds(170, 240, 200, 50);
+		bannerLabel[3].addMouseListener(new MouseAdapter() {
+
+			public void mouseClicked(MouseEvent e) {
+				try {
+					Desktop.getDesktop().browse(new URI("https://www.work.go.kr/seekWantedMain.do"));
+				} catch (URISyntaxException | IOException ex) {
+					// It looks like there's a problem
+				}
+			}
+
+		});
+
+		// ë¯¸ì • - ì¶”ì²œ ê²Œì‹œë¬¼ ì´ëŸ°ê±°ë©´ ì¢‹ì„ë“¯?
+
+		setSize(1500, 900);
 		setVisible(true);
 	}
 
 	public class RoundJTextField extends JTextField {
 		/**
-		 * °Ë»öÃ¢ ¼¼ºÎ µğÀÚÀÎ (¸ğ¼­¸® µÕ±Û°Ô) µ¸º¸±â ÀÌ¹ÌÁö ÅØ½ºÆ®ÇÊµå ¾È¿¡ ³Ö¾î¾ßÇÔ
+		 * ê²€ìƒ‰ì°½ ì„¸ë¶€ ë””ìì¸ (ëª¨ì„œë¦¬ ë‘¥ê¸€ê²Œ) ë‹ë³´ê¸° ì´ë¯¸ì§€ í…ìŠ¤íŠ¸í•„ë“œ ì•ˆì— ë„£ì–´ì•¼í•¨
 		 */
 		private static final long serialVersionUID = 1L;
 		private Shape shape;
@@ -99,7 +449,7 @@ public class MainFrame extends JFrame {
 		public RoundJTextField(int size) {
 			super(size);
 			setOpaque(false);
-			setText("°Ë»ö ±â´É");
+			setText("ê²€ìƒ‰ ê¸°ëŠ¥");
 
 		}
 
@@ -123,8 +473,8 @@ public class MainFrame extends JFrame {
 
 	}
 
-	public static void main(String[] args) {
-		MainFrame frame = new MainFrame();
-	}
+//	public static void main(String[] args) {
+//		MainFrame frame = new MainFrame();
+//	}
 
 }
