@@ -1,11 +1,14 @@
 package frames;
 
 import dto.*;
+
+import java.net.SocketException;
+
 import DB.*;
 public class ControlFrame {
 	private Member member;
 	
-	public ControlFrame() {
+	public ControlFrame()  {
 		Member member = new Member();
 		Login login = new Login();
 		member.setId("SHUAI1593");

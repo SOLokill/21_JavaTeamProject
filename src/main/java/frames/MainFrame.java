@@ -34,7 +34,7 @@ import dto.Member;
 
 public class MainFrame extends JFrame {
 
-	public MainFrame(Member member) throws SocketException {
+	public MainFrame(Member member)  {
 		setTitle("성공인");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel groundPane = new JPanel();

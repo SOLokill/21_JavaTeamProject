@@ -6,7 +6,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/dev/workspace/21_JavaTeamProject/selenium-server-4.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/dev/sqldeveloper/jdbc/lib/ojdbc8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/juhye/Downloads/selenium-server-4.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/juhye/Downloads/WINDOWS.X64_193000_db_home/jdbc/lib/ojdbc8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

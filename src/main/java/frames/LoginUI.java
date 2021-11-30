@@ -3,6 +3,8 @@ package frames;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -14,8 +16,13 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import DB.Login;
+import dto.Member;
 
 public class LoginUI extends JFrame {
+	JTextField id;
+	JPasswordField password;
+	Member member;
 	
 	public LoginUI() {
 	setTitle("로그인");
@@ -84,21 +91,61 @@ public class LoginUI extends JFrame {
 	btnLogin.setBackground(new Color(000,153,255));
 	LoginArea.add(btnLogin);
 	btnLogin.setBounds(479,330,170,120);
+	btnLogin.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Member member=new Member();
+			member.setId(id.getText());
+			
+			//암호화된 비밀번호 get하기
+			 String pw = "";
+			  
+			//tf_pw 필드에서 패스워드를 얻어옴, char[] 배열에 저장
+			char[] secret_pw = password.getPassword(); 
+
+			//secret_pw 배열에 저장된 암호의 자릿수 만큼 for문 돌리면서 cha 에 한 글자씩 저장
+			     for(char cha : secret_pw){         
+			         Character.toString(cha);       //cha 에 저장된 값 string으로 변환
+			       //pw 에 저장하기, pw 에 값이 비어있으면 저장, 값이 있으면 이어서 저장하는 삼항연산자
+			         pw += (pw.equals("")) ? ""+cha+"" : ""+cha+"";   
+			     }
+			member.setPassword(pw);
+			
+			Login login=new Login();
+			Member result=login.memberLogin(member);
+			dispose();
+		}
+		
+	});
 	
 	//회원가입 | 아이디/비밀번호 찾기 
-	JLabel lbRegister=new JLabel("회원가입");
+	JButton lbRegister=new JButton("회원가입");
 	lbRegister.setFont(font25);
-	lbRegister.setBounds(50,490,100,25);
+	lbRegister.setBounds(50,490,150,25);
 	LoginArea.add(lbRegister);
+	lbRegister.setBorderPainted(false);
+	lbRegister.setContentAreaFilled(false);
+	
+	lbRegister.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			new RegisterUI();
+			groundPane.setVisible(true);
+		}
+		
+	});
 	
 	JLabel l=new JLabel("|");
 	l.setFont(font25);
-	l.setBounds(160,490,10,25);
+	l.setBounds(180,490,10,25);
 	LoginArea.add(l);
 	
 	JLabel searchIDPW=new JLabel("아이디/비밀번호 찾기");
 	searchIDPW.setFont(font25);
-	searchIDPW.setBounds(180,490,250,25);
+	searchIDPW.setBounds(190,490,250,25);
 	LoginArea.add(searchIDPW);
 
 
