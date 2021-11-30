@@ -79,17 +79,18 @@ public class ChatClient extends JFrame implements KeyListener {
 			conn = util.open();
 			PreparedStatement ps = null;
 			ResultSet rs = null;
-			String sql = "SELECT ROOMNO FROM (SELECT LISTAGG(STUDENTNO, ',') WITHIN GROUP(ORDER BY ROOMNO, STUDENTNO) AS CLIENT, ROOMNO FROM PARTICIPANTS GROUP BY ROOMNO) WHERE CLIENT = ? || ',' ||?";
+			String sql = "SELECT ROOMNO FROM (SELECT LISTAGG(STUDENTNO, ',') WITHIN GROUP(ORDER BY ROOMNO, STUDENTNO) AS CLIENT, ROOMNO FROM PARTICIPANTS GROUP BY ROOMNO) WHERE CLIENT = ?|| ',' ||?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, client.getStudentNo() > member.getStudentNo() ? member.getStudentNo() : client.getStudentNo());
 			ps.setInt(2, client.getStudentNo() < member.getStudentNo() ? member.getStudentNo() : client.getStudentNo());
 			rs = ps.executeQuery();
 			int roomNo = 0;
-			if(rs.next()) {
+			if (rs.next()) {
 				roomNo = rs.getInt("ROOMNO");
 			}
+			System.out.println("1 : " + roomNo);
 			if (roomNo == 0) {
-				sql = "INSERT INTO CHATTING_ROOM (ROOMNO, ROOMNM) VALUES (CHATTING_ROOM_SQ.NEXTVAL, '"+title+"')";
+				sql = "INSERT INTO CHATTING_ROOM (ROOMNO, ROOMNM) VALUES (CHATTING_ROOM_SQ.NEXTVAL, '" + title + "')";
 				ps = conn.prepareStatement(sql);
 				ps.executeQuery();
 				sql = "INSERT INTO PARTICIPANTS VALUES(PARTICIPANTS_SQ.NEXTVAL, ?, CHATTING_ROOM_SQ.CURRVAL)";
@@ -99,26 +100,27 @@ public class ChatClient extends JFrame implements KeyListener {
 				ps = conn.prepareStatement(sql);
 				ps.setInt(1, clientMember.getStudentNo());
 				ps.executeQuery();
-			}else{
+			} else {
 				sql = "SELECT NAME, CONTENT FROM CHATTING C INNER JOIN MEMBER M ON C.STUDENTNO = M.STUDENTNO WHERE C.ROOMNO = ? ORDER BY CHATINDEX";
 				ps = conn.prepareStatement(sql);
 				ps.setInt(1, roomNo);
 				rs = ps.executeQuery();
-				while(rs.next()) {
+				while (rs.next()) {
 					String name = rs.getString("NAME");
 					String content = rs.getString("CONTENT");
 					String message = name + " : " + content + "\n";
 					chatGround.append(message);
 				}
-				
 			}
+
 			util.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		try {
-			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-			System.out.println(ois.readObject());
+//			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+//			System.out.println(ois.readObject());
+
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -140,8 +142,7 @@ public class ChatClient extends JFrame implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+			
 	}
 
 	@Override
@@ -149,8 +150,8 @@ public class ChatClient extends JFrame implements KeyListener {
 		try {
 			if (e.getKeyCode() == e.VK_ENTER) {
 				InetAddress local = InetAddress.getLocalHost();
-//				String ip = local.getHostAddress();
-				String ip = "192.168.219.102";
+				String ip = local.getHostAddress();
+//				String ip = "192.168.219.102";
 				socket = new Socket(ip, 1593);
 				String data = chatInput.getText();
 				ObjectOutputStream osw = new ObjectOutputStream(socket.getOutputStream());
@@ -172,24 +173,35 @@ public class ChatClient extends JFrame implements KeyListener {
 				conn = util.open();
 				PreparedStatement ps = null;
 				ResultSet rs = null;
-				
+
 				String sql = "SELECT ROOMNO FROM (SELECT LISTAGG(STUDENTNO, ',') WITHIN GROUP(ORDER BY ROOMNO, STUDENTNO) AS CLIENT, ROOMNO FROM PARTICIPANTS GROUP BY ROOMNO) WHERE CLIENT = ? || ',' ||?";
 				ps = conn.prepareStatement(sql);
-				ps.setInt(1, client.getStudentNo() > member.getStudentNo() ? member.getStudentNo() : client.getStudentNo());
-				ps.setInt(2, client.getStudentNo() < member.getStudentNo() ? member.getStudentNo() : client.getStudentNo());
+				ps.setInt(1,
+						client.getStudentNo() > member.getStudentNo() ? member.getStudentNo() : client.getStudentNo());
+				ps.setInt(2,
+						client.getStudentNo() < member.getStudentNo() ? member.getStudentNo() : client.getStudentNo());
 				rs = ps.executeQuery();
 				int roomNo = 0;
-				if(rs.next()) {
+				if (rs.next()) {
 					roomNo = rs.getInt("ROOMNO");
 				}
-				
+				System.out.println("2 : " + roomNo);
 				sql = "INSERT INTO CHATTING VALUES(CHATTING_SQ.NEXTVAL, ?, ?, ?)";
 				ps = conn.prepareStatement(sql);
 				ps.setInt(1, member.getStudentNo());
 				ps.setString(2, data);
 				ps.setInt(3, roomNo);
 				rs = ps.executeQuery();
-				
+				sql = "SELECT NAME, CONTENT FROM CHATTING C INNER JOIN MEMBER M ON C.STUDENTNO = M.STUDENTNO WHERE C.ROOMNO = ? ORDER BY CHATINDEX";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, roomNo);
+				rs = ps.executeQuery();
+				while (rs.next()) {
+					String name = rs.getString("NAME");
+					String content = rs.getString("CONTENT");
+					String messages = name + " : " + content + "\n";
+					chatGround.append(messages);
+				}
 			}
 
 		} catch (Exception e2) {
@@ -199,7 +211,65 @@ public class ChatClient extends JFrame implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
+		try {
+			if (e.getKeyCode() == e.VK_ENTER) {
+//				InetAddress local = InetAddress.getLocalHost();
+//				String ip = local.getHostAddress();
+////				String ip = "192.168.219.102";
+//				socket = new Socket(ip, 1593);
+				String data = chatInput.getText();
+//				ObjectOutputStream osw = new ObjectOutputStream(socket.getOutputStream());
+////				List<HashMap<Member, String>> message = new ArrayList<HashMap<Member, String>>();
+//				List<MessageVO> message = new ArrayList<MessageVO>();
+//				MessageVO messagevo = new MessageVO();
+//				messagevo.setMember(member);
+//				messagevo.setText(data);
+////				HashMap<Member, String> text = new HashMap<Member, String>();
+////				text.put(member, data);
+////				message.add(text);
+//				message.add(messagevo);
+//				osw.writeObject(message);
+//				chatInput.setText("");
+//				chatGround.append(messagevo.getMember().getName() + " : " + messagevo.getText() + "\n");
+////				chatGround.append(member.getName() + " : " + message.get(0).get(member) + "\n");
+				DBUtil util = new DBUtil();
+				Connection conn = null;
+				conn = util.open();
+				PreparedStatement ps = null;
+				ResultSet rs = null;
 
+				String sql = "SELECT ROOMNO FROM (SELECT LISTAGG(STUDENTNO, ',') WITHIN GROUP(ORDER BY ROOMNO, STUDENTNO) AS CLIENT, ROOMNO FROM PARTICIPANTS GROUP BY ROOMNO) WHERE CLIENT = ? || ',' ||?";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1,
+						client.getStudentNo() > member.getStudentNo() ? member.getStudentNo() : client.getStudentNo());
+				ps.setInt(2,
+						client.getStudentNo() < member.getStudentNo() ? member.getStudentNo() : client.getStudentNo());
+				rs = ps.executeQuery();
+				int roomNo = 0;
+				if (rs.next()) {
+					roomNo = rs.getInt("ROOMNO");
+				}
+				System.out.println("2 : " + roomNo);
+				sql = "INSERT INTO CHATTING VALUES(CHATTING_SQ.NEXTVAL, ?, ?, ?)";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, member.getStudentNo());
+				ps.setString(2, data);
+				ps.setInt(3, roomNo);
+				rs = ps.executeQuery();
+				sql = "SELECT NAME, CONTENT FROM CHATTING C INNER JOIN MEMBER M ON C.STUDENTNO = M.STUDENTNO WHERE C.ROOMNO = ? ORDER BY CHATINDEX";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, roomNo);
+				rs = ps.executeQuery();
+				while (rs.next()) {
+					String name = rs.getString("NAME");
+					String content = rs.getString("CONTENT");
+					String messages = name + " : " + content + "\n";
+					chatGround.append(messages);
+				}
+			}
+
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
 	}
 }
