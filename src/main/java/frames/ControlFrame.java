@@ -9,15 +9,17 @@ public class ControlFrame {
 	private Member member;
 	
 	public ControlFrame()  {
-		Member member = new Member();
-		Login login = new Login();
-		member.setId("SHUAI1593");
-		member.setPassword("RLAEHDDNR12");
-		Member loginMember = login.memberLogin(member);
+//		Member member = new Member();
+//		Login login = new Login();
+//		Member loginMember = login.memberLogin(member);
 		
 		
-		MainFrame mf = new MainFrame(loginMember);
-		mf.setVisible(true);
+//		MainFrame mf = new MainFrame(loginMember);
+//		mf.setVisible(true);
+		
+		new LoginUI();
+		
+		
 //		 if (member != null) {
 //			ChatClient chatt = new ChatClient(member);
 //			chatt.setVisible(true);
@@ -26,7 +28,7 @@ public class ControlFrame {
 //		}
 	}
 	
-	public static void main(String[] args) {
-		new ControlFrame();
-	}
+//	public static void main(String[] args) {
+//		new ControlFrame();
+//	}
 }

@@ -96,14 +96,14 @@ public class RegisterUI extends JFrame {
 	tfName.setBounds(90,400,450,40);
 	tfName.setFont(font25);
 	
-	JLabel text4=new JLabel("학교 정보");
+	JLabel text4=new JLabel("학교 정보(학번,학년,학부(과)");
 	text4.setFont(font27);
 	text4.setBounds(90,450,150,30);
 	LoginArea.add(text4);
 	
-	JTextField tfStudentNo=new JTextField("학번",400);
-	JTextField tfGrade=new JTextField("학년",400);
-	JTextField tfSubject=new JTextField("학부(과)",400);
+	JTextField tfStudentNo=new JTextField(400);
+	JTextField tfGrade=new JTextField(400);
+	JTextField tfSubject=new JTextField(400);
 
 	LoginArea.add(tfStudentNo);
 	tfStudentNo.setBounds(90,500,450,40);
@@ -197,7 +197,7 @@ public class RegisterUI extends JFrame {
 }
 	
 	
-	public static void main(String[] args) {
-		RegisterUI signIn=new RegisterUI();
-	}
+//	public static void main(String[] args) {
+//		RegisterUI signIn=new RegisterUI();
+//	}
 }
