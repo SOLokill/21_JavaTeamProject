@@ -114,6 +114,7 @@ public class LoginUI extends JFrame {
 			
 			Login login=new Login();
 			Member result=login.memberLogin(member);
+			MainFrame mf = new MainFrame(result);
 			dispose();
 		}
 		
@@ -154,7 +155,7 @@ public class LoginUI extends JFrame {
 }
 	
 	
-	public static void main(String[] args) {
-		LoginUI login=new LoginUI();
-	}
+//	public static void main(String[] args) {
+//		LoginUI login=new LoginUI();
+//	}
 }

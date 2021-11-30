@@ -71,9 +71,15 @@ public class MainFrame extends JFrame {
 		imageLabel.setIcon(image3);
 		imageLabel.setBounds(650, 0, 200, 90);
 		groundPane.add(imageLabel);
+		
+		JLabel welcome=new JLabel(member.getName()+"님 환영합니다!");
+		welcome.setFont(new Font("나눔고딕", Font.PLAIN, 17));
+		welcome.setBounds(1100, 50, 200, 40);
+		groundPane.add(welcome);
+		
 
 		// 로그인 버튼
-		JButton btnLogin = new JButton("로그인");
+		JButton btnLogin = new JButton("로그아웃");
 		btnLogin.setBounds(1300, 50, 100, 40);
 		btnLogin.setBackground(Color.white);
 		btnLogin.setFont(new Font("나눔고딕", Font.PLAIN, 17));
@@ -83,8 +89,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new LoginUI();
-				groundPane.setVisible(true);
-				btnLogin.setText("로그아웃");
+				dispose();
 			}
 
 		});

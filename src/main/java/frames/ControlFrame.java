@@ -16,8 +16,12 @@ public class ControlFrame {
 		Member loginMember = login.memberLogin(member);
 		
 		
-		MainFrame mf = new MainFrame(loginMember);
-		mf.setVisible(true);
+//		MainFrame mf = new MainFrame(loginMember);
+//		mf.setVisible(true);
+		
+		new LoginUI();
+		
+		
 //		 if (member != null) {
 //			ChatClient chatt = new ChatClient(member);
 //			chatt.setVisible(true);
