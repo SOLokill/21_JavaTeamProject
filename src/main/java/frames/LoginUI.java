@@ -155,7 +155,7 @@ public class LoginUI extends JFrame {
 }
 	
 	
-//	public static void main(String[] args) {
-//		LoginUI login=new LoginUI();
-//	}
+	public static void main(String[] args) {
+		LoginUI login=new LoginUI();
+	}
 }
