@@ -77,7 +77,7 @@ public class RegisterUI extends JFrame {
 	text2.setBounds(90,230,350,25);
 	LoginArea.add(text2);
 	
-	JTextField tfId=new JTextField("아이디",400);
+	JTextField tfId=new JTextField(400);
 	JPasswordField tfPassword=new JPasswordField(400);
 	LoginArea.add(tfId);
 	tfId.setBounds(90,270,450,40);
@@ -91,7 +91,7 @@ public class RegisterUI extends JFrame {
 	text3.setBounds(90,360,100,27);
 	LoginArea.add(text3);
 	
-	JTextField tfName=new JTextField("이름",400);
+	JTextField tfName=new JTextField(400);
 	LoginArea.add(tfName);
 	tfName.setBounds(90,400,450,40);
 	tfName.setFont(font25);
